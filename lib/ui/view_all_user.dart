@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../firebase_services/user-info.dart';
+import '../firebase_services/user_info.dart';
 import 'messaging_screen.dart';
 
 class ViewUser extends StatefulWidget {
-  String userID;
-   ViewUser({super.key, required this.userID});
+ final String userid;
+   const ViewUser({super.key, required this.userid});
 
   @override
   State<ViewUser> createState() => _ViewUserState();
@@ -43,14 +43,14 @@ class _ViewUserState extends State<ViewUser> {
                                 builder: (context) => MessagingScreen(
                                   messageList: UserInfo
                                       .getUserMessageList(
-                                      widget.userID, document.id),
+                                      widget.userid, document.id),
                                   docID: document.id,
-                                  userID: document['id'],
+                                  userid: document['id'],
                                   name: document['name'],
                                 )));
                        FirebaseFirestore.instance.collection('userinfo').doc(currentUser()).collection('messages').doc(document['id']).set({
                           'name': document['name'],
-                          'userID': document['id'],
+                          'userid': document['id'],
                           'time': FieldValue.serverTimestamp()
                         });
 

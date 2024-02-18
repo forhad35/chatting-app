@@ -9,7 +9,7 @@ String currentUser(){
 
 class UserInfo{
    getUserInfo(){
-    var firebaseMsg = FirebaseFirestore.instance.collection('userinfo').doc(currentUser()).collection('messages').snapshots();
+    var firebaseMsg = FirebaseFirestore.instance.collection('userinfo').doc(currentUser()).collection('messages').orderBy('time',descending: false).snapshots();
     return firebaseMsg;
   }
 

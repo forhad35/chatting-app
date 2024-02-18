@@ -1,14 +1,14 @@
 
 import 'package:auto_scroll/auto_scroll.dart';
-import 'package:chatting_app/firebase_services/user-info.dart';
+import 'package:chatting_app/firebase_services/user_info.dart';
 import 'package:chatting_app/utilitis/display_size.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 class MessagingScreen extends StatefulWidget {
-  var messageList;
-  var userID,docID,name;
-   MessagingScreen({super.key, required this.messageList , required this.userID, required  this.docID,required this.name });
+ final CollectionReference messageList;
+  final String userid,docID,name;
+   const MessagingScreen({super.key, required this.messageList , required this.userid, required  this.docID,required this.name });
   @override
   State<MessagingScreen> createState() => _MessagingScreenState();
 }
@@ -56,7 +56,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                 
                       Container(
                         alignment:
-                        currentUser() == document['userID'] ? Alignment.centerRight : Alignment.centerLeft,
+                        currentUser() == document['userid'] ? Alignment.centerRight : Alignment.centerLeft,
                         margin: const EdgeInsets.all(6),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +64,7 @@ class _MessagingScreenState extends State<MessagingScreen> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                  color: currentUser() == document['userID'] ? Colors.blueAccent:Colors.grey ,
+                                  color: currentUser() == document['userid'] ? Colors.blueAccent:Colors.grey ,
                                   borderRadius: BorderRadius.circular(15)),
                               // width: displayWidth(context)*0.60,
                               child: InkWell(
@@ -127,59 +127,57 @@ class _MessagingScreenState extends State<MessagingScreen> {
                   ),
                 ),
               ),
-              Container(
-                // margin: EdgeInsets.only(right: 10),
-                // width: displayWidth(context)*0.10,
-                child: IconButton(
-                    onPressed: () async{
-                      // UserInfo.getCurrentUserName();
+              IconButton(
+                  onPressed: () async{
+                    // UserInfo.getCurrentUserName();
+                    if (kDebugMode) {
                       print(await UserInfo.getCurrentUserName());
-                      // _message.text = await UserInfo.getCurrentUserName();
-                      // setState(() {
-                      //
-                      // });
+                    }
+                    // _message.text = await UserInfo.getCurrentUserName();
+                    // setState(() {
+                    //
+                    // });
 
 
-                      if (_message.text.isNotEmpty) {
-                        if (kDebugMode) {
-                          print(_message.text);
-                        }
-                        UserInfo.setSendMessage(widget.userID,widget.docID).add({
-                          'userID':  currentUser(),
-                          'message': _message.text,
-                          'time': FieldValue.serverTimestamp()
-                        });
-                    await    FirebaseFirestore.instance.collection('userinfo').doc(widget.userID).collection('messages').doc(widget.docID).set({
-                          'name':await UserInfo.getCurrentUserName(),
-                          'userID': currentUser(),
-                          'time': FieldValue.serverTimestamp()
-                        }).then((value) {
-                          if (kDebugMode) {
-                            print(" success");
-                          }
-                        }).catchError((onError){
-                          if (kDebugMode) {
-                            print(onError);
-                          }
-                        });
-                        widget.messageList.add({
-                          'userID': currentUser(),
-                          'message': _message.text,
-                          'time': FieldValue.serverTimestamp()
-                        }).then((value) {
-                          if (kDebugMode) {
-                            print(" success add");
-                          }
-                        }).catchError((onError){
-                          if (kDebugMode) {
-                            print(' add $onError');
-                          }
-                        });
-                        _message.clear();
+                    if (_message.text.isNotEmpty) {
+                      if (kDebugMode) {
+                        print(_message.text);
                       }
-                    },
-                    icon:  const Icon(Icons.send,size:25,)),
-              )
+                      UserInfo.setSendMessage(widget.userid,widget.docID).add({
+                        'userid':  currentUser(),
+                        'message': _message.text,
+                        'time': FieldValue.serverTimestamp()
+                      });
+                  await    FirebaseFirestore.instance.collection('userinfo').doc(widget.userid).collection('messages').doc(widget.docID).set({
+                        'name':await UserInfo.getCurrentUserName(),
+                        'userid': currentUser(),
+                        'time': FieldValue.serverTimestamp()
+                      }).then((value) {
+                        if (kDebugMode) {
+                          print(" success");
+                        }
+                      }).catchError((onError){
+                        if (kDebugMode) {
+                          print(onError);
+                        }
+                      });
+                      widget.messageList.add({
+                        'userid': currentUser(),
+                        'message': _message.text,
+                        'time': FieldValue.serverTimestamp()
+                      }).then((value) {
+                        if (kDebugMode) {
+                          print(" success add");
+                        }
+                      }).catchError((onError){
+                        if (kDebugMode) {
+                          print(' add $onError');
+                        }
+                      });
+                      _message.clear();
+                    }
+                  },
+                  icon:  const Icon(Icons.send,size:25,))
             ],
           ),
         ) // This trailing comma makes auto-formatting nicer for build methods.
